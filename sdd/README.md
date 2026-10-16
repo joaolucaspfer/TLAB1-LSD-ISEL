@@ -42,6 +42,8 @@ Regras:
 | `REQ-CA-*` | Requisito do módulo principal Controlo_Acessos | `REQ-CA-004` |
 | `REQ-CTB-*` | Requisito do testbench do sistema global | `REQ-CTB-003` |
 | `REQ-QS-*` | Requisito do mapeamento Quartus / placa | `REQ-QS-002` |
+| `REQ-RP-*` | Requisito do relatório LaTeX | `REQ-RP-005` |
+| `REQ-RP-*` | Requisito do relatório LaTeX | `REQ-RP-005` |
 | `DEC-*` | Decisão de design/especificação | `DEC-001` |
 | `BUG-*` | Defeito detetado na verificação | `BUG-001` |
 | `TC-*` | Caso de teste | `TC-001` |
@@ -60,6 +62,7 @@ Regras:
 | [`specs/05_controlo_acessos.md`](specs/05_controlo_acessos.md) | Módulo principal — `Controlo_Acessos.vhd` (top-level) | **Implementado e verificado** |
 | [`specs/06_controlo_acessos_tb.md`](specs/06_controlo_acessos_tb.md) | Testbench do sistema global — `Controlo_Acessos_tb.vhd` | **Implementado e verificado** |
 | [`specs/07_quartus_de10_lite.md`](specs/07_quartus_de10_lite.md) | Mapeamento Quartus p/ DE10-Lite — `Controlo_Acessos.qsf` | **Implementado e verificado** (teste na placa pendente) |
+| [`specs/08_relatorio_latex.md`](specs/08_relatorio_latex.md) | Relatório LaTeX do TLAB1 — `template_relatorio/.../report.tex` | **Implementado e verificado** |
 
 ---
 
@@ -74,6 +77,7 @@ Regras:
 | Top-level — Controlo de acessos | `Controlo_Acessos.vhd` | [05](specs/05_controlo_acessos.md) | Implementado | TC-CA-001, TC-CA-002, TC-CA-003 ✔ |
 | Top-level — Testbench | `Controlo_Acessos_tb.vhd` | [06](specs/06_controlo_acessos_tb.md) | Implementado | TC-CTB-001, TC-CTB-002 ✔ |
 | Mapeamento DE10-Lite | `Controlo_Acessos.qsf` | [07](specs/07_quartus_de10_lite.md) | Implementado | TC-QS-001, TC-QS-002 ✔ (teste manual pendente) |
+| Relatório LaTeX | `template_relatorio/.../report.tex` | [08](specs/08_relatorio_latex.md) | Implementado | TC-RP-001..005 ✔ |
 
 ---
 

@@ -16,9 +16,17 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
 ├── Controlo_Acessos.vhd               # Top-level — interliga Bloco 1 e Bloco 2 (structural)
 ├── Controlo_Acessos_tb.vhd            # Testbench auto-verificável do sistema (5 cenários)
 ├── Controlo_Acessos.qsf               # Atribuições Quartus — placa Intel DE10-Lite (MAX 10)
-├── tabelas_mapas_kernaugh.md          # Relatório: tabela de verdade + mapas de Karnaugh
-├── tabelas_mapas_kernaugh.pdf         #     "      (versão PDF)
-├── tabelas_mapas_kernaugh.tex         #     "      (fonte LaTeX)
+├── karnaugh/                          # Relatório técnico: tabela de verdade + mapas de Karnaugh
+│   ├── tabelas_mapas_karnaugh.md          #     (fonte Markdown)
+│   ├── tabelas_mapas_karnaugh.pdf         #     (versão PDF)
+│   └── tabelas_mapas_karnaugh.tex         #     (fonte LaTeX)
+├── template_relatorio/                # Relatório LaTeX do TLAB1 (template do ISEL)
+│   └── LSD_2627_template/
+│       ├── report.tex                 # Relatório preenchido (spec 08)
+│       ├── report.pdf                 # PDF gerado (18 páginas)
+│       ├── tikzlibrarykarnaugh.code.tex  # Lib. TikZ de mapas de Karnaugh (local)
+│       ├── figures/                   # Logótipos ISEL + DE10-Lite
+│       └── vhdl/                      # Cópias dos .vhd usadas nas listagens
 └── sdd/                               # Spec-Driven Development
     ├── README.md                      # Processo SDD, convenções de IDs, estado
     ├── CHANGELOG.md                   # Registo datado de specs/código/verificação
@@ -30,7 +38,8 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
         ├── 04_verifica_tb.md                      # Spec do testbench do Bloco 2 (REQ-VTB/TC)
         ├── 05_controlo_acessos.md                 # Spec do top-level (REQ-CA/TC + traçabilidade)
         ├── 06_controlo_acessos_tb.md              # Spec do testbench global (REQ-CTB/TC)
-        └── 07_quartus_de10_lite.md                # Spec do mapeamento DE10-Lite (REQ-QS/TC)
+        ├── 07_quartus_de10_lite.md                # Spec do mapeamento DE10-Lite (REQ-QS/TC)
+        └── 08_relatorio_latex.md                  # Spec do relatório LaTeX (REQ-RP/TC)
 ```
 
 ## Bloco 1 — `Identifica_Departamento`
@@ -40,7 +49,7 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
 | `A` | in | `std_logic_vector(3 downto 0)` | Código do funcionário (`A3..A0`, 0..15) |
 | `D` | out | `std_logic_vector(3 downto 0)` | Permissões (`D3..D0`, 1 = autorizado) |
 
-Arquitetura `Behavioral` com atribuições concorrentes (apenas `and`, `or`, `not`), a partir das equações simplificadas por mapas de Karnaugh — ver [spec do bloco](sdd/specs/01_identifica_departamento.md) e [relatório](tabelas_mapas_kernaugh.md).
+Arquitetura `Behavioral` com atribuições concorrentes (apenas `and`, `or`, `not`), a partir das equações simplificadas por mapas de Karnaugh — ver [spec do bloco](sdd/specs/01_identifica_departamento.md) e [relatório técnico](karnaugh/tabelas_mapas_karnaugh.md).
 
 > **Nota (DEC-001):** o segundo termo de `D(0)` foi corrigido para `NOT(A3) AND A2 AND NOT(A1) AND A0`
 > — a versão original (`A2 AND NOT(A1) AND A0`) daria acesso de `D0` ao funcionário 13, contrariando a tabela de verdade. Detalhe em [sdd/specs/01_identifica_departamento.md](sdd/specs/01_identifica_departamento.md).
@@ -190,6 +199,27 @@ Ver [`sdd/README.md`](sdd/README.md) para o processo completo e convenções.
 | Top-level — Módulo principal | `Controlo_Acessos` | ✅ Implementado e verificado |
 | Top-level — Testbench | `Controlo_Acessos_tb` | ✅ Implementado e verificado |
 | Mapeamento DE10-Lite | `Controlo_Acessos.qsf` | ✅ Implementado e verificado (teste manual na placa pendente) |
+| Relatório LaTeX TLAB1 | `report.tex` / `report.pdf` | ✅ Implementado e verificado ([spec 08](sdd/specs/08_relatorio_latex.md)) |
+
+## Relatório LaTeX (TLAB1)
+
+O relatório final está em [`template_relatorio/LSD_2627_template/`](template_relatorio/LSD_2627_template/)
+([spec 08](sdd/specs/08_relatorio_latex.md)): `report.tex` (fonte) e `report.pdf` (18 páginas).
+Segue o template oficial do ISEL, com o preâmbulo/estilos intactos; inclui a tabela de verdade
+global, os 4 mapas de Karnaugh (com agrupamentos), as equações de `D0..D3`/`R`, as 6 listagens
+VHDL e a tabela de atribuição de pinos.
+
+Compilar (pdfLaTeX, 2 passagens — também funciona no Overleaf):
+
+```bash
+cd template_relatorio/LSD_2627_template
+pdflatex -interaction=nonstopmode report.tex
+pdflatex -interaction=nonstopmode report.tex
+```
+
+> **Nota (DEC-081):** as cópias dos `.vhd` em `template_relatorio/.../vhdl/` têm os comentários
+> normalizados para ASCII porque o pacote `listings` do LaTeX não suporta UTF-8. As fontes no
+> repositório mantêm-se intactas.
 
 ## Licença / Uso
 

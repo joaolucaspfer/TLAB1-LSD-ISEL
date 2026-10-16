@@ -143,3 +143,26 @@ Formato: data — tipo (`SPEC`/`CODE`/`DOCS`/`VERIFY`/`BUG`) — descrição.
 - TC-QS-001 — `quartus_map Controlo_Acessos` com o `.qsf` do repositório (proj. temporário): **PASS** — `Analysis & Synthesis was successful. 0 errors`.
 - TC-QS-002 — `quartus_fit Controlo_Acessos` + leitura do `fit.rpt`: **PASS** — `Quartus Prime Fitter was successful. 0 errors, 6 warnings` (informativos: AN 447 3.3 V, `Missing drive strength`); pinos confirmados `A[3]=C12`, `A[2]=C11`, `A[1]=D12`, `A[0]=C10`, `S[1]=B12`, `S[0]=A12`, `R=A8` e `3.3-V LVTTL` nos 7 pinos.
 - Teste manual na placa: **PENDENTE** (sem hardware) — ver secção 8 da spec 07.
+
+---
+
+## 2026-10-16 (revisão 9) — Relatório LaTeX do TLAB1
+
+### SPEC
+- Criada [`specs/08_relatorio_latex.md`](specs/08_relatorio_latex.md) (SPEC-RP-08): requisitos do relatório (`REQ-RP-001..009`), decisões e critérios de aceitação.
+- **DEC-080** — mapa de Karnaugh com `\karnaughmaptab` (modo tabular): variáveis na ordem `{A3}{A2}{A1}{A0}` (linhas A3A2, colunas A1A0), dados na ordem de leitura do mapa, identificador vazio, agrupamentos redesenhados com o estilo `grp` (grupos toroidais em duas caixas).
+- **DEC-081** — cópias ASCII dos `.vhd` no apêndice (o `listings` não suporta UTF-8); fontes do repositório intactas.
+
+### CODE
+- Criado `template_relatorio/LSD_2627_template/report.tex` (relatório completo, preâmbulo do template intacto) e gerado `report.pdf` (18 páginas).
+- Copiadas as 6 fontes `.vhd` para `template_relatorio/.../vhdl/` (cópias normalizadas para ASCII usadas nas listagens).
+
+### VERIFY
+- TC-RP-001 — `pdflatex` ×2 (MiKTeX 24.1): **PASS** — 18 páginas, 0 erros, sem `Overfull`/`undefined reference`/`Missing character`.
+- TC-RP-002 — Tabela de verdade extraída do PDF vs spec 00: **PASS** — 16/16 linhas idênticas.
+- TC-RP-003 — Células "1" dos 4 mapas extraídas do PDF (PyMuPDF) vs tabela: **PASS** — D0/D1/D2/D3 `MATCH`.
+- TC-RP-004 — Agrupamentos de cada mapa vs mintermos previstos: **PASS** — inclui wrap de D2 (`m12+m14`) em duas caixas.
+- TC-RP-005 — 6 listagens VHDL + tabela de pinos presentes no PDF: **PASS**.
+
+### DOCS
+- `sdd/README.md` e `README.md` da raiz atualizados (índice de specs, tabela de estado, árvore de ficheiros, secção do relatório e comandos de compilação).

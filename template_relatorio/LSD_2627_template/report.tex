@@ -151,7 +151,7 @@
       
       \Large {Relatório do \\Trabalho Laboratorial 1}\\
       
-      \textbf{Circuitos Combinatórios}
+      \textbf{Sistema de Controlo de Acessos}
     \end{center}
 
     \vspace{1.0cm}
@@ -159,14 +159,13 @@
 Trabalho realizado por:
 
 \begin{itemize}[label={}]
-    \item Número Nome
-    \item Número Nome
+    \item Número: 56012 \quad Nome: João Lucas Passos Ferreira
 \end{itemize}
 
 \vspace{0.5cm}
-Turma:
+Turma: 11D
 
-Docente:
+Docente: Pedro Miguens Matutino
 
 \date{}
 
@@ -188,7 +187,7 @@ Docente:
 \pagestyle{fancy}
 \fancyhead{} % clear all header fields
 \fancyhead[LO]{\includegraphics[width=2.5cm]{figures/01_ISEL-Logotipo-RGB_Horizontal-Compacto-900.png}}
-\fancyhead[RO]{\footnotesize Lógica e Sistemas Digitais 2025/2026 inverno \\ Trabalho Laboratorial 1}
+\fancyhead[RO]{\footnotesize Lógica e Sistemas Digitais 2026/2027 inverno \\ Trabalho Laboratorial 1}
 
 
 %-------------------------------------------------------------------------------
@@ -213,62 +212,325 @@ Docente:
 \setcounter{page}{1}
 
 \section{Objetivo}
-Qual o objetivo do projeto? Qual o assunto(s) a tratar.
+O objetivo do Trabalho Laboratorial 1 é projetar, implementar e verificar um
+circuito digital combinatório que realize um \textbf{sistema de controlo de
+acessos} a um edifício com quatro departamentos. O circuito recebe o código de
+um funcionário e o departamento onde este se pretende identificar, e decide
+automaticamente se o acesso é autorizado.
+
+O projeto foi desenvolvido segundo o fluxo \emph{especificação
+$\rightarrow$ simplificação lógica $\rightarrow$ descrição em VHDL
+$\rightarrow$ simulação $\rightarrow$ síntese e programação}, recorrendo às
+ferramentas \emph{ModelSim-Altera 20.1} para simulação e \emph{Quartus Prime
+Lite 20.1} para síntese, \emph{fitting} e programação da placa
+\textbf{Intel DE10-Lite} (dispositivo MAX~10, \texttt{10M50DAF484C7G}).
 
 \section{Descrição do Circuito a Projetar}
-Descrever o problema (similar ao enunciado)
+Cada funcionário é identificado por um \textbf{código binário de 4~bits}
+$A = A_3A_2A_1A_0$, representando os funcionários de 0 a 15. A cada código
+corresponde um conjunto de \emph{permissões de acesso}, ou seja, os
+departamentos $\{D_0, D_1, D_2, D_3\}$ onde esse funcionário pode entrar. A
+cada departamento associa-se um bit de permissão:
+$D = D_3D_2D_1D_0$ (\texttt{1} = autorizado, \texttt{0} = não autorizado).
+
+O sistema dispõe ainda de uma entrada de \textbf{seleção de departamento}
+$S = S_1S_0$ (\texttt{00}~=~$D_0$, \texttt{01}~=~$D_1$, \texttt{10}~=~$D_2$,
+\texttt{11}~=~$D_3$). A saída $R$ controla a cancela: $R=1$ \emph{abre} a
+cancela (acesso concedido) quando o código do funcionário tem permissão para o
+departamento selecionado; caso contrário, $R=0$ mantém a cancela \emph{fechada}.
+
+O comportamento pretendido é descrito pela tabela de verdade global da
+Tabela~\ref{tab:verdade}, que constitui a especificação de referência do
+projeto (para todos os 16 códigos de funcionário).
+
+\begin{table}[!h]\footnotesize
+	\centering
+	\caption{Tabela de verdade global do sistema de controlo de acessos.}
+	\renewcommand{\arraystretch}{1.15}
+	\begin{tabular}{ccccccccccc}
+	\toprule
+	\textbf{Func.} & \textbf{$A_3$} & \textbf{$A_2$} & \textbf{$A_1$} &
+	\textbf{$A_0$} & \textbf{$D_3$} & \textbf{$D_2$} & \textbf{$D_1$} &
+	\textbf{$D_0$} & \textbf{Departamentos} \\
+	\midrule
+	0  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \textbf{1} & $D_0$ \\
+	1  & 0 & 0 & 0 & 1 & 0 & \textbf{1} & 0 & 0 & $D_2$ \\
+	2  & 0 & 0 & 1 & 0 & 0 & 0 & \textbf{1} & 0 & $D_1$ \\
+	3  & 0 & 0 & 1 & 1 & \textbf{1} & 0 & 0 & 0 & $D_3$ \\
+	4  & 0 & 1 & 0 & 0 & 0 & \textbf{1} & \textbf{1} & 0 & $D_1, D_2$ \\
+	5  & 0 & 1 & 0 & 1 & 0 & \textbf{1} & 0 & \textbf{1} & $D_2, D_0$ \\
+	6  & 0 & 1 & 1 & 0 & 0 & 0 & 0 & \textbf{1} & $D_0$ \\
+	7  & 0 & 1 & 1 & 1 & 0 & \textbf{1} & 0 & 0 & $D_2$ \\
+	8  & 1 & 0 & 0 & 0 & \textbf{1} & 0 & 0 & 0 & $D_3$ \\
+	9  & 1 & 0 & 0 & 1 & \textbf{1} & 0 & 0 & 0 & $D_3$ \\
+	10 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & \textbf{1} & $D_0$ \\
+	11 & 1 & 0 & 1 & 1 & 0 & \textbf{1} & 0 & \textbf{1} & $D_2, D_0$ \\
+	12 & 1 & 1 & 0 & 0 & 0 & \textbf{1} & 0 & \textbf{1} & $D_2, D_0$ \\
+	13 & 1 & 1 & 0 & 1 & 0 & 0 & \textbf{1} & 0 & $D_1$ \\
+	14 & 1 & 1 & 1 & 0 & 0 & \textbf{1} & \textbf{1} & 0 & $D_2, D_1$ \\
+	15 & 1 & 1 & 1 & 1 & \textbf{1} & 0 & \textbf{1} & 0 & $D_1, D_3$ \\
+	\bottomrule
+	\end{tabular}
+
+	\label{tab:verdade}
+\end{table}
 
 \section{Desenvolvimento do Projeto}
-Descrever o desenvolvimento do projeto, incluindo a descrição do circuito, a função lógica, o diagrama de blocos, a simplificação lógica, a implementação em VHDL e a simulação.
+O sistema foi decomposto em dois blocos combinatórios independentes,
+interligados por um módulo de topo:
+
+\begin{enumerate}[noitemsep]
+	\item \textbf{\texttt{Identifica\_Departamento}} --- descodifica o código do
+	funcionário $A$ no vetor de permissões $D$;
+	\item \textbf{\texttt{Verifica}} --- verifica se o departamento selecionado
+	$S$ está autorizado em $D$ e gera o sinal de controlo da cancela $R$;
+	\item \textbf{\texttt{Controlo\_Acessos}} --- módulo de topo que instancia e
+	liga os dois blocos anteriores.
+\end{enumerate}
 
 \subsection{Diagrama de blocos}
-Na Figura~\ref{fig:diagramablocos} ....
+{\emergencystretch=2em
+A arquitetura do sistema encontra-se representada na
+Figura~\ref{fig:diagramablocos}. O bloco
+\texttt{Identifica\_\allowbreak Departamento} recebe o código do funcionário
+$A[3..0]$ e produz as permissões $D[3..0]$. O bloco \texttt{Verifica} recebe
+essas permissões, juntamente com a seleção de departamento $S[1..0]$, e gera a
+saída $R$.\par}
+
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{figures/DiagramaBlocos.png}
-	\caption{Diagrama de blocos da função F}
-	\centering
+	\begin{tikzpicture}[>=stealth,
+		block/.style={draw, thick, rectangle, minimum height=1.2cm,
+		minimum width=3.4cm, align=center}]
+		\node[block] (id) at (0,0) {\texttt{Identifica\_}\\\texttt{Departamento}};
+		\node[block] (vf) at (5.8,0) {\texttt{Verifica}};
+		\draw[->, thick] (-2.4,0) -- node[above]{\small $A[3..0]$} (id.west);
+		\draw[->, thick] (id.east) -- node[above]{\small $D[3..0]$} (vf.west);
+		\draw[->, thick] (vf.east) -- node[above]{\small $R$} (8.2,0);
+		\draw[->, thick] (5.8,-1.6) -- node[right]{\small $S[1..0]$} (vf.south);
+	\end{tikzpicture}
+	\caption{Diagrama de blocos do sistema de controlo de acessos.}
 	\label{fig:diagramablocos}
 \end{figure}
 
 \subsection{Funções lógicas dos circuitos}
-Na equação~\eqref{eq:funcaoF} encontra-se ....
+A partir da Tabela~\ref{tab:verdade} obtêm-se diretamente as formas canónicas
+\emph{soma-de-produtos} (SOP) de cada bit de permissão, identificando os
+mintermos em que a saída vale~1:
+
+\begin{align}
+	D_0(A_3,A_2,A_1,A_0) &= \sum m(0,5,6,10,11,12) \\
+	D_1(A_3,A_2,A_1,A_0) &= \sum m(2,4,13,14,15) \\
+	D_2(A_3,A_2,A_1,A_0) &= \sum m(1,4,5,7,11,12,14) \\
+	D_3(A_3,A_2,A_1,A_0) &= \sum m(3,8,9,15)
+\end{align}
+
+O bloco \texttt{Verifica} seleciona, de entre as quatro permissões $D_i$, aquela
+que corresponde ao departamento ativo $S$, funcionando como um multiplexador
+controlado por $S$:
+
 \begin{equation}
-	f(A^+,B,C,D^-)=\sum{m(3,6,7,13,14,15)}+\sum{d(8,11,12)}
- \label{eq:funcaoF}
+	R = D_0\cdot\overline{S_1}\cdot\overline{S_0}
+	  + D_1\cdot\overline{S_1}\cdot S_0
+	  + D_2\cdot S_1\cdot\overline{S_0}
+	  + D_3\cdot S_1\cdot S_0
+	\label{eq:funcaoR}
 \end{equation}
 
 \subsection{Simplificação lógica}
-$f(A^+,B,C,D^-)=$
-\begin{tikzpicture}[karnaugh,thick, enable indices]
-  \karnaughmap{4}{}{{$A$}{$B$}{$C$}{$D$}}%
-    {{}{}{}1{}{}11
-    -{}{}--111}%
-    {
-      \node[grp={red}{1.9}{1.9}] at (3.0,2.0) {};
-      \node[grp={blue}{1.9}{1.9}] at (2.0,2.0) {};
-      \node[grp={green}{1.9}{1.9}] at (3.0,1.0) {};
-    }
-\end{tikzpicture}
-$ = B \cdot C + A \cdot B +  C \cdot D $
+Cada função $D_i$ foi simplificada com o auxílio do mapa de Karnaugh
+$4\times4$ (linhas em $A_3A_2$, colunas em $A_1A_0$, ambas na ordem de Gray
+$00,01,11,10$). Os agrupamentos usados (a cor com que aparecem em cada mapa)
+estão assinalados sobre as células correspondentes.
 
-Descreveu-se a função em VHDL, conforme~\ref{vhdl:ficheiro1}, utilizando~\cite{guiaQuartus}
+\paragraph{Função $D_0$:}
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}[karnaugh,thick]
+		\karnaughmaptab{4}{}{{$A_3$}{$A_2$}{$A_1$}{$A_0$}}%
+		{1{}{}{} {}1{}1 1{}{}{} {}{}11}%
+		{
+			\node[grp={red}{1.9}{0.9}] at (3.0,0.5) {};
+			\node[grp={blue}{0.9}{0.9}] at (0.5,3.5) {};
+			\node[grp={green}{0.9}{0.9}] at (1.5,2.5) {};
+			\node[grp={orange}{0.9}{0.9}] at (3.5,2.5) {};
+			\node[grp={violet}{0.9}{0.9}] at (0.5,1.5) {};
+		}
+	\end{tikzpicture}
+	\caption{Mapa de Karnaugh de $D_0$ e respetivos agrupamentos.}
+	\label{fig:kmD0}
+\end{figure}
+\begin{equation}
+	\begin{aligned}
+	D_0 ={}& A_3\cdot\overline{A_2}\cdot A_1
+	       + \overline{A_3}\cdot A_2\cdot\overline{A_1}\cdot A_0
+	       + \overline{A_3}\cdot\overline{A_2}\cdot\overline{A_1}\cdot\overline{A_0}\\
+	       &+ \overline{A_3}\cdot A_2\cdot A_1\cdot\overline{A_0}
+	       + A_3\cdot A_2\cdot\overline{A_1}\cdot\overline{A_0}
+	\end{aligned}
+\end{equation}
 
+\paragraph{Função $D_1$:}
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}[karnaugh,thick]
+		\karnaughmaptab{4}{}{{$A_3$}{$A_2$}{$A_1$}{$A_0$}}%
+		{{}{}{}1 1{}{}{} {}111 {}{}{}{}}%
+		{
+			\node[grp={red}{1.9}{0.9}] at (2.0,1.5) {};
+			\node[grp={blue}{1.9}{0.9}] at (3.0,1.5) {};
+			\node[grp={green}{0.9}{0.9}] at (3.5,3.5) {};
+			\node[grp={orange}{0.9}{0.9}] at (0.5,2.5) {};
+		}
+	\end{tikzpicture}
+	\caption{Mapa de Karnaugh de $D_1$ e respetivos agrupamentos.}
+	\label{fig:kmD1}
+\end{figure}
+\begin{equation}
+	D_1 = A_3\cdot A_2\cdot A_0 + A_3\cdot A_2\cdot A_1
+	     + \overline{A_3}\cdot\overline{A_2}\cdot A_1\cdot\overline{A_0}
+	     + \overline{A_3}\cdot A_2\cdot\overline{A_1}\cdot\overline{A_0}
+\end{equation}
+
+\paragraph{Função $D_2$:}
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}[karnaugh,thick]
+		\karnaughmaptab{4}{}{{$A_3$}{$A_2$}{$A_1$}{$A_0$}}%
+		{{}1{}{} 111{} 1{}{}1 {}{}1{}}%
+		{
+			\node[grp={red}{0.9}{1.9}] at (0.5,2.0) {};
+			\node[grp={blue}{0.9}{0.9}] at (0.5,1.5) {};
+			\node[grp={blue}{0.9}{0.9}] at (3.5,1.5) {};
+			\node[grp={green}{0.9}{1.9}] at (1.5,3.0) {};
+			\node[grp={orange}{1.9}{0.9}] at (2.0,2.5) {};
+			\node[grp={violet}{0.9}{0.9}] at (2.5,0.5) {};
+		}
+	\end{tikzpicture}
+	\caption{Mapa de Karnaugh de $D_2$ e respetivos agrupamentos (o agrupamento
+	azul envolve as colunas extremas, vizinhas na topologia toroidal do mapa).}
+	\label{fig:kmD2}
+\end{figure}
+\begin{equation}
+	\begin{aligned}
+	D_2 ={}& A_2\cdot\overline{A_1}\cdot\overline{A_0}
+	       + A_3\cdot A_2\cdot\overline{A_0}
+	       + \overline{A_3}\cdot\overline{A_1}\cdot A_0\\
+	       &+ \overline{A_3}\cdot A_2\cdot A_0
+	       + A_3\cdot\overline{A_2}\cdot A_1\cdot A_0
+	\end{aligned}
+\end{equation}
+
+\paragraph{Função $D_3$:}
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}[karnaugh,thick]
+		\karnaughmaptab{4}{}{{$A_3$}{$A_2$}{$A_1$}{$A_0$}}%
+		{{}{}1{} {}{}{}{} {}{}1{} 11{}{}}%
+		{
+			\node[grp={red}{1.9}{0.9}] at (1.0,0.5) {};
+			\node[grp={blue}{0.9}{0.9}] at (2.5,3.5) {};
+			\node[grp={green}{0.9}{0.9}] at (2.5,1.5) {};
+		}
+	\end{tikzpicture}
+	\caption{Mapa de Karnaugh de $D_3$ e respetivos agrupamentos.}
+	\label{fig:kmD3}
+\end{figure}
+\begin{equation}
+	D_3 = A_3\cdot\overline{A_2}\cdot\overline{A_1}
+	     + \overline{A_3}\cdot\overline{A_2}\cdot A_1\cdot A_0
+	     + A_3\cdot A_2\cdot A_1\cdot A_0
+\end{equation}
+
+A função de verificação \eqref{eq:funcaoR} já se encontra na forma mínima,
+dispensando simplificação adicional.
+
+\subsection{Implementação em VHDL}
+Os três blocos foram descritos em VHDL (biblioteca \texttt{ieee.std\_logic\_1164}),
+recorrendo exclusivamente a \textbf{atribuições concorrentes de sinal} com os
+operadores lógicos \texttt{and}, \texttt{or} e \texttt{not} ---
+consequentemente, o circuito é puramente combinatório e não contém processos nem
+memória.
+
+O bloco \texttt{Identifica\_Departamento} (VHDL~\ref{vhdl:identifica})
+implementa diretamente as equações simplificadas de $D_0$ a $D_3$. O bloco
+\texttt{Verifica} (VHDL~\ref{vhdl:verifica}) implementa a expressão~\eqref{eq:funcaoR}.
+O módulo de topo \texttt{Controlo\_Acessos} (VHDL~\ref{vhdl:controlo}) instancia
+os dois blocos anteriores através de \texttt{entity work} e liga a saída de
+permissões do primeiro à entrada de permissões do segundo pelo sinal interno
+\texttt{internal\_D}, conforme a
+Figura~\ref{fig:diagramablocos}. A descrição~\cite{guiaQuartus} orientou a
+estrutura do projeto no Quartus.
 
 \section{Resultados e Discussão}
-Explicar o que foi feito para verificar a funcionalidade do circuito. Quais os resultados obtidos ...
+A verificação do circuito foi feita em duas fases: (i) simulação funcional com
+\emph{testbenches} em ModelSim-Altera~20.1; (ii) síntese e verificação de
+pinos no Quartus Prime Lite~20.1 para a placa DE10-Lite.
 
 \subsection{Simulação}
-Realizou-se a simulação do circuito projetado conforme o ficheiro \textit{Testbench} descrito em VHDL~\ref{vhdl:ficheiro2} ...
+Foram escritos \emph{testbenches} VHDL para cada bloco, que estimulam todas as
+combinações de entrada relevantes e comparam as saídas com os valores esperados
+da especificação, emitindo mensagens de \texttt{assert} em caso de erro. Os
+testbenches \texttt{Identifica\_\allowbreak Departamento\_\allowbreak tb}
+(VHDL~\ref{vhdl:tbidentifica}), \texttt{Verifica\_tb}
+(VHDL~\ref{vhdl:tbverifica}) e
+\texttt{Controlo\_\allowbreak Acessos\_\allowbreak tb}
+(VHDL~\ref{vhdl:tbcontrolo}) foram executados em modo batch com
+\texttt{vsim -c}; os resultados obtidos resumem-se na Tabela~\ref{tab:sim}.
+
+\begin{table}[!h]\footnotesize
+	\centering
+	\caption{Resultados da simulação dos três blocos (ModelSim-Altera 20.1).}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{llcc}
+	\toprule
+	\textbf{Testbench} & \textbf{Entidade testada} & \textbf{Casos} & \textbf{Resultado} \\
+	\midrule
+	\texttt{Identifica\_Departamento\_tb} & \texttt{Identifica\_Departamento} & 16/16 & PASS \\
+	\texttt{Verifica\_tb} & \texttt{Verifica} & 4/4 & PASS \\
+	\texttt{Controlo\_Acessos\_tb} & \texttt{Controlo\_Acessos} & 5/5 & PASS \\
+	\bottomrule
+	\end{tabular}
+
+	\label{tab:sim}
+\end{table}
+
+O testbench de \texttt{Identifica\_Departamento} percorre os 16 códigos de
+funcionário e confirma que o vetor de permissões $D$ coincide linha a linha com
+a Tabela~\ref{tab:verdade}. O testbench de \texttt{Verifica} testa os quatro
+departamentos (incluindo casos de acesso concedido e negado) e o testbench do
+módulo de topo valida a integração dos dois blocos em cinco cenários
+representativos. Todas as asserções passaram, não se tendo detetado qualquer
+discrepância face à especificação.
 
 \subsection{Teste}
-Realizou-se o teste do circuito na placa DE10-lite, conforme a atribuição de pinos da Tabela~\ref{tab:pinos}.
+O projeto foi sintetizado no Quartus Prime Lite~20.1 para o dispositivo MAX~10
+\texttt{10M50DAF484C7G} da placa Intel DE10-Lite. A análise e síntese
+(\texttt{quartus\_map}) terminou sem erros e o \emph{fitter}
+(\texttt{quartus\_fit}) terminou sem erros, com apenas seis avisos
+informativos da plataforma (AN~447 relativo ao standard de 3{,}3~V e
+\emph{Missing drive strength}), que não comprometem o funcionamento.
+
+As entradas $A$ e $S$ foram atribuídas a interruptores (\texttt{SW}) e a saída
+$R$ a um LED (\texttt{LEDR0}), de acordo com a atribuição de pinos da
+Tabela~\ref{tab:pinos} (Apêndice~\ref{apx:pinos}). Os sinais usam o standard de
+E/S \texttt{3.3-V LVTTL}.
 
 \section{Conclusão} 
-O trabalho consistiu em … \\
-Foi desenvolvido em … \\ 
-Foi testado na placa …\\
-Os resultados experimentais confirmam o funcionamento do circuito de acordo com …
+O trabalho consistiu em projetar, descrever em VHDL e verificar um sistema
+digital combinatório de controlo de acessos a um edifício com quatro
+departamentos. \\
+O sistema foi desenvolvido a partir de uma tabela de verdade global, decomposto
+em dois blocos (\texttt{Identifica\_Departamento} e \texttt{Verifica})
+interligados por um módulo de topo (\texttt{Controlo\_Acessos}), com as funções
+lógicas simplificadas por mapas de Karnaugh. \\
+A implementação foi simulada com sucesso em ModelSim-Altera~20.1 (todas as
+asserções dos testbenches passaram) e sintetizada sem erros no Quartus Prime
+Lite~20.1 para a placa Intel DE10-Lite, onde foi definida a atribuição de pinos
+aos interruptores e ao LED. \\
+O teste experimental na placa ficou pendente por indisponibilidade de hardware;
+espera-se que os resultados confirmem o funcionamento do circuito de acordo com
+a Tabela~\ref{tab:verdade}, já validado em simulação.
 
 %-------------------------------------------------------------------------------
 % REFERENCES
@@ -289,34 +551,59 @@ Terasic \emph{DE10-lite User Manual}, 2020, Terasic.
 \section{VHDL}
 % Inserção de ficheiro de descrição hardware
 \lstinputlisting[
-    caption={Descrição do circuito},
-    label={vhdl:maioria}
-]{vhdl/maioria.vhd}
+    caption={Bloco 1 --- \texttt{Identifica\_Departamento}: descodificação do código do funcionário nas permissões dos departamentos},
+    label={vhdl:identifica}
+]{vhdl/Identifica_Departamento.vhd}
 
 % Inserção de ficheiro de descrição hardware
 \lstinputlisting[
-    caption={Testbench},
-    label={vhdl:testbench}
-]{vhdl/maioria_tb.vhd}
+    caption={Bloco 2 --- \texttt{Verifica}: validação do departamento ativo contra as permissões},
+    label={vhdl:verifica}
+]{vhdl/Verifica.vhd}
+
+% Inserção de ficheiro de descrição hardware
+\lstinputlisting[
+    caption={Módulo de topo --- \texttt{Controlo\_Acessos}: interligação estrutural dos dois blocos},
+    label={vhdl:controlo}
+]{vhdl/Controlo_Acessos.vhd}
+
+% Inserção de ficheiro de testbench
+\lstinputlisting[
+    caption={Testbench de \texttt{Identifica\_Departamento}},
+    label={vhdl:tbidentifica}
+]{vhdl/Identifica_Departamento_tb.vhd}
+
+% Inserção de ficheiro de testbench
+\lstinputlisting[
+    caption={Testbench de \texttt{Verifica}},
+    label={vhdl:tbverifica}
+]{vhdl/Verifica_tb.vhd}
+
+% Inserção de ficheiro de testbench
+\lstinputlisting[
+    caption={Testbench de \texttt{Controlo\_Acessos}},
+    label={vhdl:tbcontrolo}
+]{vhdl/Controlo_Acessos_tb.vhd}
 
 
 \clearpage
 \section{Atribuição de Pinos}
+\label{apx:pinos}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[h]\footnotesize
-	\caption{Atribuição de pinos para a função F~\cite{de10liteManual}}
+	\caption{Atribuição de pinos do módulo \texttt{Controlo\_Acessos} na placa Intel DE10-Lite~\cite{de10liteManual}.}
   \centering
-	\begin{tabular}{|l|c|}
+	\begin{tabular}{|l|c|c|}
 	\hline
-	\textbf{Entradas} & \textbf{pino} \\ \hline\hline
-	A & C10  \\ 
-	B & C11 \\
-	C & D12 \\
-	D & C12 \\ \hline \hline
-	\textbf{Saídas} & \textbf{pino} \\\hline \hline
-	F & A8  \\
-	\hline
+	\textbf{Sinal} & \textbf{Periférico} & \textbf{Pino} \\ \hline\hline
+	$A_3$ & SW3 & C12  \\
+	$A_2$ & SW2 & C11 \\
+	$A_1$ & SW1 & D12 \\
+	$A_0$ & SW0 & C10 \\ \hline
+	$S_1$ & SW5 & B12 \\
+	$S_0$ & SW4 & A12 \\ \hline \hline
+	$R$   & LEDR0 & A8  \\ \hline
 	\end{tabular}
 	
 	\label{tab:pinos}
