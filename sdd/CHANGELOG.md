@@ -78,3 +78,19 @@ Formato: data — tipo (`SPEC`/`CODE`/`DOCS`/`VERIFY`/`BUG`) — descrição.
 
 ### DOCS
 - Criado `AGENTS.md` na raiz e registada a **regra SDD**: toda a tarefa grande exige spec em `sdd/specs/`, atualização do `sdd/README.md` + `README.md` da raiz e entrada no CHANGELOG. Regra também adicionada à secção 1 (Regras) do `sdd/README.md`.
+
+---
+
+## 2026-10-16 (revisão 5) — Testbench do Bloco 2
+
+### SPEC
+- Criada [`specs/04_verifica_tb.md`](specs/04_verifica_tb.md) (SPEC-VTB-04): entidade sem portas, `UUT`, `stim_proc` com procedimento `verificar`, 4 cenários com `D="0101"` e `S` = `00`..`11` a 20 ns (`REQ-VTB-001..006`), **DEC-040**, critérios `TC-VTB-001/002`, mapa do ficheiro, traçabilidade e correspondência com os product-terms da SPEC-VF-03.
+- [SPEC-VF-03](specs/03_verifica.md) atualizada (v1.1): cabeçalho liga ao testbench, `TC-VF-003` passa de PENDENTE a **PASS** (secção 7) e a decisão sobre o testbench deixa de estar pendente.
+- `sdd/README.md`: novo prefixo `REQ-VTB-*`, índice com a spec 04 e linha de testbench na tabela de estado.
+
+### CODE
+- Criado `Verifica_tb.vhd` (testbench auto-verificável sem portas, conforme `REQ-VTB-001..006`): `D="0101"`, varrimento de `S` com 20 ns por teste, contagem de erros, resumo `SIMULACAO OK` e `wait;` final.
+
+### VERIFY
+- TC-VTB-001 — Análise sintática/semântica com `vcom` (ModelSim-Altera 2020.1): **PASS** — exit 0, sem erros.
+- TC-VTB-002 / TC-VF-003 — Simulação com `vsim -c work.Verifica_tb`: **PASS** — 4 testes OK (`S=00→R=1`, `S=01→R=0`, `S=10→R=1`, `S=11→R=0`), `SIMULACAO OK: 4/4 testes corretos, 0 erros`, fim aos **80 ns**, 0 errors / 0 warnings.

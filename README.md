@@ -12,6 +12,7 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
 ├── Identifica_Departamento.vhd        # Bloco 1 — DUT (behavioral, combinacional)
 ├── Identifica_Departamento_tb.vhd     # Testbench auto-verificável (16 funcionários)
 ├── Verifica.vhd                       # Bloco 2 — DUT (behavioral, combinacional)
+├── Verifica_tb.vhd                    # Testbench auto-verificável do Bloco 2 (4 cenários)
 ├── tabelas_mapas_kernaugh.md          # Relatório: tabela de verdade + mapas de Karnaugh
 ├── tabelas_mapas_kernaugh.pdf         #     "      (versão PDF)
 ├── tabelas_mapas_kernaugh.tex         #     "      (fonte LaTeX)
@@ -22,7 +23,8 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
         ├── 00_projeto_controlo_acessos.md         # Spec de projeto (tabela global, blocos)
         ├── 01_identifica_departamento.md          # Spec do Bloco 1 (REQ/DEC/TC + traçabilidade)
         ├── 02_identifica_departamento_tb.md       # Spec do testbench (REQ-TB/TC + traçabilidade)
-        └── 03_verifica.md                         # Spec do Bloco 2 (REQ-VF/TC + traçabilidade)
+        ├── 03_verifica.md                         # Spec do Bloco 2 (REQ-VF/TC + traçabilidade)
+        └── 04_verifica_tb.md                      # Spec do testbench do Bloco 2 (REQ-VTB/TC)
 ```
 
 ## Bloco 1 — `Identifica_Departamento`
@@ -47,7 +49,8 @@ Arquitetura `Behavioral` com atribuições concorrentes (apenas `and`, `or`, `no
 
 Arquitetura `Behavioral` com atribuição concorrente a partir da equação `REQ-PRJ-004`:
 `R = D(0)·!S1·!S0 + D(1)·!S1·S0 + D(2)·S1·!S0 + D(3)·S1·S0` — ou seja, `R = D(S)`.
-Detalhe em [spec 03](sdd/specs/03_verifica.md).
+Detalhe em [spec 03](sdd/specs/03_verifica.md). Testbench isolado em [`Verifica_tb.vhd`](Verifica_tb.vhd)
+([spec 04](sdd/specs/04_verifica_tb.md)): `D = "0101"`, `S` = `00`..`11`, 20 ns por teste, auto-verificado (4/4 → `SIMULACAO OK`, fim aos 80 ns).
 
 ## Simulação (ModelSim / QuestaSim)
 
@@ -68,6 +71,21 @@ Saída esperada (fim da simulação):
 
 No **Quartus Prime**: adicionar os ficheiros `.vhd` ao projeto e definir `Identifica_Departamento` como *top-level entity*.
 
+### Bloco 2 — `Verifica`
+
+```tcl
+vlib work
+vcom Verifica.vhd Verifica_tb.vhd
+vsim work.Verifica_tb
+run -all
+```
+
+Saída esperada (fim da simulação, 80 ns):
+
+```text
+# ** Note: === SIMULACAO OK: 4/4 testes corretos, 0 erros ===
+```
+
 ## Verificação (2026-10-16)
 
 | TC | Ferramenta | Resultado |
@@ -79,7 +97,8 @@ No **Quartus Prime**: adicionar os ficheiros `.vhd` ao projeto e definir `Identi
 | TC-VF-001 — Equivalência de `R` vs `D(S)` (64 combinações) | Script Python | PASS |
 | TC-VF-002 — Análise sintática/semântica de `Verifica.vhd` | `vcom` (ModelSim 2020.1) | PASS |
 | TC-VF-004 — Síntese de `Verifica` (1 logic cell, 6 in / 1 out pins) | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
-| TC-VF-003 — Simulação do Bloco 2 | — | ⏳ Pendente (sem testbench) |
+| TC-VF-003 / TC-VTB-001 — Análise do testbench do Bloco 2 | `vcom` (ModelSim 2020.1) | PASS |
+| TC-VTB-002 — Simulação do Bloco 2 (4/4 testes, 0 erros, 80 ns) | `vsim -c` | PASS |
 
 ## Metodologia — SDD (Spec-Driven Development)
 
@@ -100,7 +119,8 @@ Ver [`sdd/README.md`](sdd/README.md) para o processo completo e convenções.
 | Bloco | Entidade | Estado |
 |---|---|---|
 | 1 — Identificação de departamento | `Identifica_Departamento` | ✅ Implementado e verificado |
-| 2 — Verificação de acesso | `Verifica` | ✅ Implementado e verificado (testbench pendente) |
+| 2 — Verificação de acesso | `Verifica` | ✅ Implementado e verificado |
+| 2 — Testbench | `Verifica_tb` | ✅ Implementado e verificado |
 
 ## Licença / Uso
 

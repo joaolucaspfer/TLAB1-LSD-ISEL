@@ -1,10 +1,10 @@
 # SPEC-VF-03 — Bloco 2: Verifica
 
-**Versão:** 1.0 — 2026-10-16
+**Versão:** 1.1 — 2026-10-16
 **Entidade:** `Verifica` — ficheiro `Verifica.vhd`
-**Testbench:** ainda não criado
+**Testbench:** `Verifica_tb.vhd` — especificação detalhada em [SPEC-VTB-04](04_verifica_tb.md)
 **Depende de:** [SPEC-PRJ-00](00_projeto_controlo_acessos.md)
-**Estado:** Implementado e verificado (sem testbench)
+**Estado:** Implementado e verificado
 
 ---
 
@@ -47,7 +47,7 @@ Combinacional puro: valida se o departamento ativo no sistema (`S`, 2 bits) est�
 ### Outras decisões
 
 - Comentários no cabeçalho do `.vhd` identificam o que cada product-term cobre (`S=00` → D0, …), para rastreabilidade com a secção 4.
-- Testbench do Bloco 2 **não foi pedido**; fica registado como pendente (quando existir, segue o padrão da [SPEC-TB-02](02_identifica_departamento_tb.md)).
+- Testbench do Bloco 2 criado posteriormente e especificado em [SPEC-VTB-04](04_verifica_tb.md) (DEC-040).
 
 ## 4. Equação com mintermos (design)
 
@@ -66,7 +66,7 @@ Cada termo só é avaliado para o bit de `D` correspondente ao departamento sele
 |---|---|---|
 | `TC-VF-001` | Equivalência da equação vs. `R = D(S)` nas 64 combinações (script Python). | **PASS** |
 | `TC-VF-002` | Análise sintática/semântica do `.vhd` sem erros (`vcom`). | **PASS** |
-| `TC-VF-003` | Simulação com testbench (auto-verificação das 64 combinações). | **PENDENTE** — sem testbench |
+| `TC-VF-003` | Simulação com testbench (auto-verificação dos cenários `D="0101"`). | **PASS** — [SPEC-VTB-04](04_verifica_tb.md) |
 | `TC-VF-004` | Síntese sem erros de compilação (`quartus_map`). | **PASS** |
 
 ## 6. Traçabilidade requisito → implementação → verificação
@@ -80,6 +80,7 @@ Cada termo só é avaliado para o bit de `D` correspondente ao departamento sele
 | `REQ-VF-005` | ver sec. 4 | TC-VF-001 |
 | `REQ-VF-006` | — | TC-VF-002 |
 | `REQ-VF-007` | — | TC-VF-004 |
+| `TC-VF-003` | `Verifica_tb.vhd` ([SPEC-VTB-04](04_verifica_tb.md)) | TC-VF-003 |
 | `DEC-030` | ver sec. 3 | TC-VF-001, TC-VF-004 |
 
 ## 7. Registo de verificação (2026-10-16)
@@ -89,3 +90,4 @@ Cada termo só é avaliado para o bit de `D` correspondente ao departamento sele
 | TC-VF-001 | Python 3 (script próprio) | avaliação da equação VHDL vs. `R = D(S)` nas 16×4 = 64 combinações | **PASS** — 0 divergências em 64 combinações |
 | TC-VF-002 | ModelSim-Altera 2020.1 | `vlib work` + `vcom -quiet Verifica.vhd` | **PASS** — exit 0, sem erros |
 | TC-VF-004 | Quartus Prime Lite 20.1 | `quartus_map vf` (proj. temporário, `TOP_LEVEL_ENTITY = Verifica`) | **PASS** — `Analysis & Synthesis was successful. 0 errors, 1 warning` (warning só de NUM_PARALLEL_PROCESSORS); **6 input pins, 1 output pin, 1 logic cell** |
+| TC-VF-003 | ModelSim-Altera 2020.1 | `vsim -c work.Verifica_tb -do "run -all; quit -f"` (testbench [SPEC-VTB-04](04_verifica_tb.md)) | **PASS** — `SIMULACAO OK: 4/4 testes corretos, 0 erros` (D="0101", S=00..11, 20 ns por teste, termina aos 80 ns; 0 errors / 0 warnings) |

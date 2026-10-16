@@ -38,6 +38,7 @@ Regras:
 | `REQ-PRJ-*` | Requisito de projeto (nível sistema) | `REQ-PRJ-001` |
 | `REQ-ID-*` | Requisito do bloco Identifica_Departamento | `REQ-ID-003` |
 | `REQ-VF-*` | Requisito do bloco Verifica | `REQ-VF-001` |
+| `REQ-VTB-*` | Requisito do testbench do bloco Verifica | `REQ-VTB-003` |
 | `DEC-*` | Decisão de design/especificação | `DEC-001` |
 | `BUG-*` | Defeito detetado na verificação | `BUG-001` |
 | `TC-*` | Caso de teste | `TC-001` |
@@ -51,7 +52,8 @@ Regras:
 | [`specs/00_projeto_controlo_acessos.md`](specs/00_projeto_controlo_acessos.md) | Visão geral do sistema, tabela de verdade global, blocos | Ativa |
 | [`specs/01_identifica_departamento.md`](specs/01_identifica_departamento.md) | Bloco 1 — `Identifica_Departamento.vhd` | **Implementado e verificado** |
 | [`specs/02_identifica_departamento_tb.md`](specs/02_identifica_departamento_tb.md) | Testbench do Bloco 1 — `Identifica_Departamento_tb.vhd` | **Implementado e verificado** |
-| [`specs/03_verifica.md`](specs/03_verifica.md) | Bloco 2 — `Verifica` (sinal R) | **Implementado e verificado** (sem testbench) |
+| [`specs/03_verifica.md`](specs/03_verifica.md) | Bloco 2 — `Verifica` (sinal R) | **Implementado e verificado** |
+| [`specs/04_verifica_tb.md`](specs/04_verifica_tb.md) | Testbench do Bloco 2 — `Verifica_tb.vhd` | **Implementado e verificado** |
 
 ---
 
@@ -61,7 +63,8 @@ Regras:
 |---|---|---|---|---|
 | 1 — Identifica_Departamento | `Identifica_Departamento.vhd` | [01](specs/01_identifica_departamento.md) | Implementado | TC-001, TC-002, TC-004 ✔ |
 | 1 — Testbench | `Identifica_Departamento_tb.vhd` | [02](specs/02_identifica_departamento_tb.md) | Implementado | TC-001b, TC-002, TC-003 ✔ |
-| 2 — Verifica | `Verifica.vhd` | [03](specs/03_verifica.md) | Implementado | TC-VF-001, TC-VF-002, TC-VF-004 ✔ (TC-VF-003 pendente: sem testbench) |
+| 2 — Verifica | `Verifica.vhd` | [03](specs/03_verifica.md) | Implementado | TC-VF-001, TC-VF-002, TC-VF-004 ✔ |
+| 2 — Testbench | `Verifica_tb.vhd` | [04](specs/04_verifica_tb.md) | Implementado | TC-VTB-001, TC-VTB-002 ✔ (TC-VF-003 ✔) |
 
 ---
 
