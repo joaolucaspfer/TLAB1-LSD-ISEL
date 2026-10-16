@@ -15,6 +15,7 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
 ├── Verifica_tb.vhd                    # Testbench auto-verificável do Bloco 2 (4 cenários)
 ├── Controlo_Acessos.vhd               # Top-level — interliga Bloco 1 e Bloco 2 (structural)
 ├── Controlo_Acessos_tb.vhd            # Testbench auto-verificável do sistema (5 cenários)
+├── Controlo_Acessos.qsf               # Atribuições Quartus — placa Intel DE10-Lite (MAX 10)
 ├── tabelas_mapas_kernaugh.md          # Relatório: tabela de verdade + mapas de Karnaugh
 ├── tabelas_mapas_kernaugh.pdf         #     "      (versão PDF)
 ├── tabelas_mapas_kernaugh.tex         #     "      (fonte LaTeX)
@@ -28,7 +29,8 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
         ├── 03_verifica.md                         # Spec do Bloco 2 (REQ-VF/TC + traçabilidade)
         ├── 04_verifica_tb.md                      # Spec do testbench do Bloco 2 (REQ-VTB/TC)
         ├── 05_controlo_acessos.md                 # Spec do top-level (REQ-CA/TC + traçabilidade)
-        └── 06_controlo_acessos_tb.md              # Spec do testbench global (REQ-CTB/TC)
+        ├── 06_controlo_acessos_tb.md              # Spec do testbench global (REQ-CTB/TC)
+        └── 07_quartus_de10_lite.md                # Spec do mapeamento DE10-Lite (REQ-QS/TC)
 ```
 
 ## Bloco 1 — `Identifica_Departamento`
@@ -124,6 +126,25 @@ temporário com as 64 combinações de `A`/`S` vs tabela de verdade → `=== TOP
 No **Quartus Prime**: adicionar os 3 ficheiros `.vhd` ao projeto e definir `Controlo_Acessos`
 como *top-level entity* (nos testes de cada bloco isolado, usar esse bloco como top-level).
 
+## Mapeamento na placa Intel DE10-Lite (MAX 10)
+
+O ficheiro [`Controlo_Acessos.qsf`](Controlo_Acessos.qsf) ([spec 07](sdd/specs/07_quartus_de10_lite.md))
+contém as atribuições para a DE10-Lite (dispositivo `10M50DAF484C7G`):
+
+| Porta | Sentido | Periférico | Pino |
+|---|---|---|---|
+| `A[3]` | entrada | SW3 | `PIN_C12` |
+| `A[2]` | entrada | SW2 | `PIN_C11` |
+| `A[1]` | entrada | SW1 | `PIN_D12` |
+| `A[0]` | entrada | SW0 | `PIN_C10` |
+| `S[1]` | entrada | SW5 | `PIN_B12` |
+| `S[0]` | entrada | SW4 | `PIN_A12` |
+| `R` | saída | LEDR0 | `PIN_A8` |
+
+Todos os pinos com `IO_STANDARD "3.3-V LVTTL"`. Para programar: criar/abrir o projeto
+Quartus com revisão `Controlo_Acessos`, incluir o `.qsf` e os 3 ficheiros `.vhd`,
+correr `Processing > Start Compilation` e programar o `.sof` (`Tools > Programmer`).
+
 ## Verificação (2026-10-16)
 
 | TC | Ferramenta | Resultado |
@@ -142,6 +163,8 @@ como *top-level entity* (nos testes de cada bloco isolado, usar esse bloco como 
 | TC-CA-002 — Síntese do top-level (1 logic cell, 6 in / 1 out pins) | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
 | TC-CTB-001 — Análise sintática/semântica do testbench global (4 ficheiros) | `vcom` (ModelSim 2020.1) | PASS |
 | TC-CTB-002 — Simulação global (5/5 cenários, 0 erros, 100 ns) | `vsim -c` | PASS |
+| TC-QS-001 — Síntese com o `.qsf` da DE10-Lite | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
+| TC-QS-002 — Fitter e pinos (7 pinos mapeados, 0 errors) | `quartus_fit` (Quartus Prime Lite 20.1) | PASS |
 
 ## Metodologia — SDD (Spec-Driven Development)
 
@@ -166,6 +189,7 @@ Ver [`sdd/README.md`](sdd/README.md) para o processo completo e convenções.
 | 2 — Testbench | `Verifica_tb` | ✅ Implementado e verificado |
 | Top-level — Módulo principal | `Controlo_Acessos` | ✅ Implementado e verificado |
 | Top-level — Testbench | `Controlo_Acessos_tb` | ✅ Implementado e verificado |
+| Mapeamento DE10-Lite | `Controlo_Acessos.qsf` | ✅ Implementado e verificado (teste manual na placa pendente) |
 
 ## Licença / Uso
 

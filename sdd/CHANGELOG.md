@@ -127,3 +127,19 @@ Formato: data — tipo (`SPEC`/`CODE`/`DOCS`/`VERIFY`/`BUG`) — descrição.
 ### VERIFY
 - TC-CTB-001 — Análise sintática/semântica com `vcom` (ModelSim-Altera 2020.1): **PASS** — exit 0, sem erros.
 - TC-CTB-002 — Simulação com `vsim -c work.Controlo_Acessos_tb`: **PASS** — 5/5 cenários OK (a 20/40/60/80/100 ns), `SIMULACAO OK: 5/5 cenarios corretos, 0 erros`, **0 errors / 0 warnings**.
+
+---
+
+## 2026-10-16 (revisão 8) — Mapeamento Quartus DE10-Lite
+
+### SPEC
+- Criada [`specs/07_quartus_de10_lite.md`](specs/07_quartus_de10_lite.md) (SPEC-QS-07): mapeamento do topo `Controlo_Acessos` para a placa Intel DE10-Lite — `A[3..0]` em `SW3..SW0` (C12/C11/D12/C10), `S[1..0]` em `SW5..SW4` (B12/A12), `R` em `LEDR0` (A8), `3.3-V LVTTL` (`REQ-QS-001..007`), **DEC-070**, critérios `TC-QS-001/002`, tabela de atribuições, traçabilidade e teste manual na placa (secção 8, pendente de hardware).
+- `sdd/README.md`: novo prefixo `REQ-QS-*`, índice com a spec 07 e linha do mapeamento na tabela de estado.
+
+### CODE
+- Criado `Controlo_Acessos.qsf` (raiz): família `MAX 10`, dispositivo `10M50DAF484C7G`, `TOP_LEVEL_ENTITY Controlo_Acessos`, 3 `VHDL_FILE`, 7 `set_location_assignment` e 7 `IO_STANDARD "3.3-V LVTTL"`, com comentários por bloco (conforme `REQ-QS-001..006`).
+
+### VERIFY
+- TC-QS-001 — `quartus_map Controlo_Acessos` com o `.qsf` do repositório (proj. temporário): **PASS** — `Analysis & Synthesis was successful. 0 errors`.
+- TC-QS-002 — `quartus_fit Controlo_Acessos` + leitura do `fit.rpt`: **PASS** — `Quartus Prime Fitter was successful. 0 errors, 6 warnings` (informativos: AN 447 3.3 V, `Missing drive strength`); pinos confirmados `A[3]=C12`, `A[2]=C11`, `A[1]=D12`, `A[0]=C10`, `S[1]=B12`, `S[0]=A12`, `R=A8` e `3.3-V LVTTL` nos 7 pinos.
+- Teste manual na placa: **PENDENTE** (sem hardware) — ver secção 8 da spec 07.
