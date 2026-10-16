@@ -14,6 +14,7 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
 ├── Verifica.vhd                       # Bloco 2 — DUT (behavioral, combinacional)
 ├── Verifica_tb.vhd                    # Testbench auto-verificável do Bloco 2 (4 cenários)
 ├── Controlo_Acessos.vhd               # Top-level — interliga Bloco 1 e Bloco 2 (structural)
+├── Controlo_Acessos_tb.vhd            # Testbench auto-verificável do sistema (5 cenários)
 ├── tabelas_mapas_kernaugh.md          # Relatório: tabela de verdade + mapas de Karnaugh
 ├── tabelas_mapas_kernaugh.pdf         #     "      (versão PDF)
 ├── tabelas_mapas_kernaugh.tex         #     "      (fonte LaTeX)
@@ -26,7 +27,8 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
         ├── 02_identifica_departamento_tb.md       # Spec do testbench (REQ-TB/TC + traçabilidade)
         ├── 03_verifica.md                         # Spec do Bloco 2 (REQ-VF/TC + traçabilidade)
         ├── 04_verifica_tb.md                      # Spec do testbench do Bloco 2 (REQ-VTB/TC)
-        └── 05_controlo_acessos.md                 # Spec do top-level (REQ-CA/TC + traçabilidade)
+        ├── 05_controlo_acessos.md                 # Spec do top-level (REQ-CA/TC + traçabilidade)
+        └── 06_controlo_acessos_tb.md              # Spec do testbench global (REQ-CTB/TC)
 ```
 
 ## Bloco 1 — `Identifica_Departamento`
@@ -103,13 +105,21 @@ Saída esperada (fim da simulação, 80 ns):
 
 ```tcl
 vlib work
-vcom Identifica_Departamento.vhd Verifica.vhd Controlo_Acessos.vhd
-vsim work.Controlo_Acessos
+vcom Identifica_Departamento.vhd Verifica.vhd Controlo_Acessos.vhd Controlo_Acessos_tb.vhd
+vsim work.Controlo_Acessos_tb
+run -all
 ```
 
-Verificado com um testbench temporário (não versionado) que percorre as 64 combinações
-de `A`/`S` e compara `R` com a tabela de verdade global: `=== TOP OK: 64/64 corretos ===`
-(fim aos 1280 ns) — [spec 05](sdd/specs/05_controlo_acessos.md), `TC-CA-003`.
+O testbench é **auto-verificável** ([spec 06](sdd/specs/06_controlo_acessos_tb.md)): 5 cenários
+reais (func. 0/4/8 em deps. 0/1/2/3) com 20 ns por cenário — saída esperada aos **100 ns**:
+
+```text
+# ** Note: === SIMULACAO OK: 5/5 cenarios corretos, 0 erros ===
+```
+
+Verificação adicional (`TC-CA-003`, [spec 05](sdd/specs/05_controlo_acessos.md)): testbench
+temporário com as 64 combinações de `A`/`S` vs tabela de verdade → `=== TOP OK: 64/64 corretos ===`
+(fim aos 1280 ns).
 
 No **Quartus Prime**: adicionar os 3 ficheiros `.vhd` ao projeto e definir `Controlo_Acessos`
 como *top-level entity* (nos testes de cada bloco isolado, usar esse bloco como top-level).
@@ -130,6 +140,8 @@ como *top-level entity* (nos testes de cada bloco isolado, usar esse bloco como 
 | TC-CA-001 — Análise sintática/semântica do top-level (3 ficheiros) | `vcom` (ModelSim 2020.1) | PASS |
 | TC-CA-003 — Simulação do sistema completo (64/64 combinações, 1280 ns) | `vsim -c` | PASS |
 | TC-CA-002 — Síntese do top-level (1 logic cell, 6 in / 1 out pins) | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
+| TC-CTB-001 — Análise sintática/semântica do testbench global (4 ficheiros) | `vcom` (ModelSim 2020.1) | PASS |
+| TC-CTB-002 — Simulação global (5/5 cenários, 0 erros, 100 ns) | `vsim -c` | PASS |
 
 ## Metodologia — SDD (Spec-Driven Development)
 
@@ -153,6 +165,7 @@ Ver [`sdd/README.md`](sdd/README.md) para o processo completo e convenções.
 | 2 — Verificação de acesso | `Verifica` | ✅ Implementado e verificado |
 | 2 — Testbench | `Verifica_tb` | ✅ Implementado e verificado |
 | Top-level — Módulo principal | `Controlo_Acessos` | ✅ Implementado e verificado |
+| Top-level — Testbench | `Controlo_Acessos_tb` | ✅ Implementado e verificado |
 
 ## Licença / Uso
 

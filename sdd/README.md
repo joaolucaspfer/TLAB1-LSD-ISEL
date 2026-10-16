@@ -40,6 +40,7 @@ Regras:
 | `REQ-VF-*` | Requisito do bloco Verifica | `REQ-VF-001` |
 | `REQ-VTB-*` | Requisito do testbench do bloco Verifica | `REQ-VTB-003` |
 | `REQ-CA-*` | Requisito do módulo principal Controlo_Acessos | `REQ-CA-004` |
+| `REQ-CTB-*` | Requisito do testbench do sistema global | `REQ-CTB-003` |
 | `DEC-*` | Decisão de design/especificação | `DEC-001` |
 | `BUG-*` | Defeito detetado na verificação | `BUG-001` |
 | `TC-*` | Caso de teste | `TC-001` |
@@ -56,6 +57,7 @@ Regras:
 | [`specs/03_verifica.md`](specs/03_verifica.md) | Bloco 2 — `Verifica` (sinal R) | **Implementado e verificado** |
 | [`specs/04_verifica_tb.md`](specs/04_verifica_tb.md) | Testbench do Bloco 2 — `Verifica_tb.vhd` | **Implementado e verificado** |
 | [`specs/05_controlo_acessos.md`](specs/05_controlo_acessos.md) | Módulo principal — `Controlo_Acessos.vhd` (top-level) | **Implementado e verificado** |
+| [`specs/06_controlo_acessos_tb.md`](specs/06_controlo_acessos_tb.md) | Testbench do sistema global — `Controlo_Acessos_tb.vhd` | **Implementado e verificado** |
 
 ---
 
@@ -68,6 +70,7 @@ Regras:
 | 2 — Verifica | `Verifica.vhd` | [03](specs/03_verifica.md) | Implementado | TC-VF-001, TC-VF-002, TC-VF-004 ✔ |
 | 2 — Testbench | `Verifica_tb.vhd` | [04](specs/04_verifica_tb.md) | Implementado | TC-VTB-001, TC-VTB-002 ✔ (TC-VF-003 ✔) |
 | Top-level — Controlo de acessos | `Controlo_Acessos.vhd` | [05](specs/05_controlo_acessos.md) | Implementado | TC-CA-001, TC-CA-002, TC-CA-003 ✔ |
+| Top-level — Testbench | `Controlo_Acessos_tb.vhd` | [06](specs/06_controlo_acessos_tb.md) | Implementado | TC-CTB-001, TC-CTB-002 ✔ |
 
 ---
 

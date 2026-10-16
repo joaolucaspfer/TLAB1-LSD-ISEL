@@ -111,3 +111,19 @@ Formato: data — tipo (`SPEC`/`CODE`/`DOCS`/`VERIFY`/`BUG`) — descrição.
 - TC-CA-001 — Análise sintática/semântica dos 3 ficheiros com `vcom` (ModelSim-Altera 2020.1): **PASS** — exit 0, sem erros.
 - TC-CA-003 — Simulação do sistema completo com testbench temporário (64 combinações de `A`/`S`, 20 ns por estímulo, `R` vs tabela de verdade global): **PASS** — `=== TOP OK: 64/64 corretos ===`, fim aos **1280 ns**, 0 errors / 0 warnings.
 - TC-CA-002 — Síntese do top-level com `quartus_map` (Quartus Prime Lite 20.1, top = `Controlo_Acessos`, 3 ficheiros): **PASS** — `0 errors, 1 warning` (só NUM_PARALLEL_PROCESSORS); 6 input pins, 1 output pin, **1 logic cell**.
+
+---
+
+## 2026-10-16 (revisão 7) — Testbench do sistema global
+
+### SPEC
+- Criada [`specs/06_controlo_acessos_tb.md`](specs/06_controlo_acessos_tb.md) (SPEC-CTB-06): instância de `Controlo_Acessos`, 5 cenários reais de acesso com 20 ns e comentários de resultado esperado (`REQ-CTB-001..005`), **DEC-060**, critérios `TC-CTB-001/002`, mapa do ficheiro, traçabilidade e tabela cenário ↔ tabela de verdade.
+- [SPEC-CA-05](specs/05_controlo_acessos.md) atualizada (v1.1): cabeçalho liga ao testbench permanente e a secção 6 regista `TC-CTB-002`.
+- `sdd/README.md`: novo prefixo `REQ-CTB-*`, índice com a spec 06 e linha do testbench global na tabela de estado.
+
+### CODE
+- Criado `Controlo_Acessos_tb.vhd` (testbench auto-verificável sem portas, conforme `REQ-CTB-001..005`): cenários Func 0/Dept 0 → `R=1`, Func 0/Dept 1 → `R=0`, Func 4/Dept 1 → `R=1`, Func 4/Dept 2 → `R=1`, Func 8/Dept 3 → `R=1`, contagem de erros, resumo `SIMULACAO OK` e `wait;` final.
+
+### VERIFY
+- TC-CTB-001 — Análise sintática/semântica com `vcom` (ModelSim-Altera 2020.1): **PASS** — exit 0, sem erros.
+- TC-CTB-002 — Simulação com `vsim -c work.Controlo_Acessos_tb`: **PASS** — 5/5 cenários OK (a 20/40/60/80/100 ns), `SIMULACAO OK: 5/5 cenarios corretos, 0 erros`, **0 errors / 0 warnings**.

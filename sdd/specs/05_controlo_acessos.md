@@ -1,8 +1,8 @@
 # SPEC-CA-05 — Módulo principal: Controlo_Acessos
 
-**Versão:** 1.0 — 2026-10-16
+**Versão:** 1.1 — 2026-10-16
 **Entidade:** `Controlo_Acessos` — ficheiro `Controlo_Acessos.vhd`
-**Testbench:** gerado temporariamente para verificação (não versionado) — os testes ficam registados em `TC-CA-003`
+**Testbench:** `Controlo_Acessos_tb.vhd` — especificação detalhada em [SPEC-CTB-06](06_controlo_acessos_tb.md) (ver também `TC-CA-003`, testbench temporário de 64 combinações)
 **Depende de:** [SPEC-PRJ-00](00_projeto_controlo_acessos.md), [SPEC-ID-01](01_identifica_departamento.md), [SPEC-VF-03](03_verifica.md)
 **Estado:** Implementado e verificado
 
@@ -62,6 +62,7 @@ Módulo **top-level** do sistema: instancia os dois blocos existentes e liga a s
 | TC-CA-001 | ModelSim-Altera 2020.1 | `vcom -quiet Identifica_Departamento.vhd Verifica.vhd Controlo_Acessos.vhd Controlo_Acessos_tb.vhd` | **PASS** — exit 0, sem erros |
 | TC-CA-003 | ModelSim-Altera 2020.1 | `vsim -c work.Controlo_Acessos_tb -do "run -all; quit -f"` (TB temporário: 16×4 combinações de `A`/`S`, 20 ns por estímulo, `R` comparado com `D(A)(S)` da tabela de verdade) | **PASS** — `=== TOP OK: 64/64 corretos ===`; **0 errors / 0 warnings**; fim aos **1280 ns** |
 | TC-CA-002 | Quartus Prime Lite 20.1 | `quartus_map ca` (proj. temporário, `TOP_LEVEL_ENTITY = Controlo_Acessos`, 3 ficheiros) | **PASS** — `Analysis & Synthesis was successful. 0 errors, 1 warning` (só NUM_PARALLEL_PROCESSORS); **6 input pins, 1 output pin, 1 logic cell** |
+| TC-CTB-002 | ModelSim-Altera 2020.1 | `vsim -c work.Controlo_Acessos_tb -do "run -all; quit -f"` (testbench permanente [SPEC-CTB-06](06_controlo_acessos_tb.md)) | **PASS** — `SIMULACAO OK: 5/5 cenarios corretos, 0 erros`, fim aos 100 ns, 0 errors / 0 warnings |
 
 ## 7. Traçabilidade requisito → implementação → verificação
 
