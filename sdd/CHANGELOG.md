@@ -94,3 +94,20 @@ Formato: data — tipo (`SPEC`/`CODE`/`DOCS`/`VERIFY`/`BUG`) — descrição.
 ### VERIFY
 - TC-VTB-001 — Análise sintática/semântica com `vcom` (ModelSim-Altera 2020.1): **PASS** — exit 0, sem erros.
 - TC-VTB-002 / TC-VF-003 — Simulação com `vsim -c work.Verifica_tb`: **PASS** — 4 testes OK (`S=00→R=1`, `S=01→R=0`, `S=10→R=1`, `S=11→R=0`), `SIMULACAO OK: 4/4 testes corretos, 0 erros`, fim aos **80 ns**, 0 errors / 0 warnings.
+
+---
+
+## 2026-10-16 (revisão 6) — Módulo principal Controlo_Acessos
+
+### SPEC
+- Criada [`specs/05_controlo_acessos.md`](specs/05_controlo_acessos.md) (SPEC-CA-05): interface top-level (`A`, `S`, `R`), arquitetura estrutural com `U_IDENTIFICA`/`U_VERIFICA` e sinal `internal_D` (`REQ-CA-001..007`), **DEC-050**, critérios `TC-CA-001..003`, mapa do ficheiro e traçabilidade.
+- [SPEC-PRJ-00](specs/00_projeto_controlo_acessos.md): módulo `Controlo_Acessos` adicionado à tabela de blocos planeados (linha 3).
+- `sdd/README.md`: novo prefixo `REQ-CA-*`, índice com a spec 05 e linha do top-level na tabela de estado.
+
+### CODE
+- Criado `Controlo_Acessos.vhd` (entidade `Controlo_Acessos` + arquitetura `Behavioral` estrutural, conforme `REQ-CA-001..006`): duas instanciações diretas via `entity work.*` ligadas pelo sinal `internal_D : std_logic_vector(3 downto 0)`.
+
+### VERIFY
+- TC-CA-001 — Análise sintática/semântica dos 3 ficheiros com `vcom` (ModelSim-Altera 2020.1): **PASS** — exit 0, sem erros.
+- TC-CA-003 — Simulação do sistema completo com testbench temporário (64 combinações de `A`/`S`, 20 ns por estímulo, `R` vs tabela de verdade global): **PASS** — `=== TOP OK: 64/64 corretos ===`, fim aos **1280 ns**, 0 errors / 0 warnings.
+- TC-CA-002 — Síntese do top-level com `quartus_map` (Quartus Prime Lite 20.1, top = `Controlo_Acessos`, 3 ficheiros): **PASS** — `0 errors, 1 warning` (só NUM_PARALLEL_PROCESSORS); 6 input pins, 1 output pin, **1 logic cell**.

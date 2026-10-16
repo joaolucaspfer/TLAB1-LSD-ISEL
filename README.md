@@ -2,7 +2,7 @@
 
 Projeto **VHDL** de *Controlo de Acessos* para a discipliplina de **Lógica e Sistemas Digitais** (2026/2027) do ISEL.
 
-O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica os departamentos a que esse funcionário tem acesso (`D`, 4 bits: `D3..D0`). Um segundo bloco (`Verifica`) confirma o acesso ao departamento selecionado (`S1..S0`) e gera o sinal `R` (1 = cancela abre).
+O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica os departamentos a que esse funcionário tem acesso (`D`, 4 bits: `D3..D0`). O segundo bloco (`Verifica`) confirma o acesso ao departamento selecionado (`S1..S0`) e gera o sinal `R` (1 = cancela abre). O módulo principal **`Controlo_Acessos`** (top-level) interliga os dois blocos pelo sinal interno `internal_D`.
 
 ## Estrutura do repositório
 
@@ -13,6 +13,7 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
 ├── Identifica_Departamento_tb.vhd     # Testbench auto-verificável (16 funcionários)
 ├── Verifica.vhd                       # Bloco 2 — DUT (behavioral, combinacional)
 ├── Verifica_tb.vhd                    # Testbench auto-verificável do Bloco 2 (4 cenários)
+├── Controlo_Acessos.vhd               # Top-level — interliga Bloco 1 e Bloco 2 (structural)
 ├── tabelas_mapas_kernaugh.md          # Relatório: tabela de verdade + mapas de Karnaugh
 ├── tabelas_mapas_kernaugh.pdf         #     "      (versão PDF)
 ├── tabelas_mapas_kernaugh.tex         #     "      (fonte LaTeX)
@@ -24,7 +25,8 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
         ├── 01_identifica_departamento.md          # Spec do Bloco 1 (REQ/DEC/TC + traçabilidade)
         ├── 02_identifica_departamento_tb.md       # Spec do testbench (REQ-TB/TC + traçabilidade)
         ├── 03_verifica.md                         # Spec do Bloco 2 (REQ-VF/TC + traçabilidade)
-        └── 04_verifica_tb.md                      # Spec do testbench do Bloco 2 (REQ-VTB/TC)
+        ├── 04_verifica_tb.md                      # Spec do testbench do Bloco 2 (REQ-VTB/TC)
+        └── 05_controlo_acessos.md                 # Spec do top-level (REQ-CA/TC + traçabilidade)
 ```
 
 ## Bloco 1 — `Identifica_Departamento`
@@ -51,6 +53,17 @@ Arquitetura `Behavioral` com atribuição concorrente a partir da equação `REQ
 `R = D(0)·!S1·!S0 + D(1)·!S1·S0 + D(2)·S1·!S0 + D(3)·S1·S0` — ou seja, `R = D(S)`.
 Detalhe em [spec 03](sdd/specs/03_verifica.md). Testbench isolado em [`Verifica_tb.vhd`](Verifica_tb.vhd)
 ([spec 04](sdd/specs/04_verifica_tb.md)): `D = "0101"`, `S` = `00`..`11`, 20 ns por teste, auto-verificado (4/4 → `SIMULACAO OK`, fim aos 80 ns).
+
+## Módulo principal — `Controlo_Acessos` (top-level)
+
+| Porta | Direção | Tipo | Significado |
+|---|---|---|---|
+| `A` | in | `std_logic_vector(3 downto 0)` | Código do funcionário (`A3..A0`, 0..15) |
+| `S` | in | `std_logic_vector(1 downto 0)` | Departamento ativo (`00`=D0 … `11`=D3) |
+| `R` | out | `std_logic` | Cancela (`1` = Abre, `0` = Fechada) |
+
+Arquitetura `Behavioral` (estrutural): instancia `U_IDENTIFICA` (`entity work.Identifica_Departamento`)
+e `U_VERIFICA` (`entity work.Verifica`), ligados pelo sinal interno `internal_D` — ver [spec 05](sdd/specs/05_controlo_acessos.md).
 
 ## Simulação (ModelSim / QuestaSim)
 
@@ -86,6 +99,21 @@ Saída esperada (fim da simulação, 80 ns):
 # ** Note: === SIMULACAO OK: 4/4 testes corretos, 0 erros ===
 ```
 
+### Módulo principal — `Controlo_Acessos`
+
+```tcl
+vlib work
+vcom Identifica_Departamento.vhd Verifica.vhd Controlo_Acessos.vhd
+vsim work.Controlo_Acessos
+```
+
+Verificado com um testbench temporário (não versionado) que percorre as 64 combinações
+de `A`/`S` e compara `R` com a tabela de verdade global: `=== TOP OK: 64/64 corretos ===`
+(fim aos 1280 ns) — [spec 05](sdd/specs/05_controlo_acessos.md), `TC-CA-003`.
+
+No **Quartus Prime**: adicionar os 3 ficheiros `.vhd` ao projeto e definir `Controlo_Acessos`
+como *top-level entity* (nos testes de cada bloco isolado, usar esse bloco como top-level).
+
 ## Verificação (2026-10-16)
 
 | TC | Ferramenta | Resultado |
@@ -99,6 +127,9 @@ Saída esperada (fim da simulação, 80 ns):
 | TC-VF-004 — Síntese de `Verifica` (1 logic cell, 6 in / 1 out pins) | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
 | TC-VF-003 / TC-VTB-001 — Análise do testbench do Bloco 2 | `vcom` (ModelSim 2020.1) | PASS |
 | TC-VTB-002 — Simulação do Bloco 2 (4/4 testes, 0 erros, 80 ns) | `vsim -c` | PASS |
+| TC-CA-001 — Análise sintática/semântica do top-level (3 ficheiros) | `vcom` (ModelSim 2020.1) | PASS |
+| TC-CA-003 — Simulação do sistema completo (64/64 combinações, 1280 ns) | `vsim -c` | PASS |
+| TC-CA-002 — Síntese do top-level (1 logic cell, 6 in / 1 out pins) | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
 
 ## Metodologia — SDD (Spec-Driven Development)
 
@@ -121,6 +152,7 @@ Ver [`sdd/README.md`](sdd/README.md) para o processo completo e convenções.
 | 1 — Identificação de departamento | `Identifica_Departamento` | ✅ Implementado e verificado |
 | 2 — Verificação de acesso | `Verifica` | ✅ Implementado e verificado |
 | 2 — Testbench | `Verifica_tb` | ✅ Implementado e verificado |
+| Top-level — Módulo principal | `Controlo_Acessos` | ✅ Implementado e verificado |
 
 ## Licença / Uso
 

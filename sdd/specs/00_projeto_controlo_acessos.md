@@ -59,6 +59,7 @@ Sistema de controlo de acessos que, a partir do código de um funcionário (`A`,
 |---|---|---|---|---|
 | 1 | Identificação de departamento | `Identifica_Departamento` | `Identifica_Departamento.vhd` | Implementado — [spec 01](01_identifica_departamento.md) |
 | 2 | Verificação de acesso | `Verifica` | `Verifica.vhd` | Implementado — [spec 03](03_verifica.md) |
+| 3 | Módulo principal (top-level) | `Controlo_Acessos` | `Controlo_Acessos.vhd` | Implementado — [spec 05](05_controlo_acessos.md) |
 
 ## 6. Critérios de aceitação do projeto
 
