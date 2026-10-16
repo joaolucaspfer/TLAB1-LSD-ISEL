@@ -2,7 +2,7 @@
 
 Projeto **VHDL** de *Controlo de Acessos* para a discipliplina de **Lógica e Sistemas Digitais** (2026/2027) do ISEL.
 
-O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica os departamentos a que esse funcionário tem acesso (`D`, 4 bits: `D3..D0`). Um segundo bloco (`Verifica`, pendente) confirmará o acesso ao departamento selecionado (`S1..S0`) através do sinal `R`.
+O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica os departamentos a que esse funcionário tem acesso (`D`, 4 bits: `D3..D0`). Um segundo bloco (`Verifica`) confirma o acesso ao departamento selecionado (`S1..S0`) e gera o sinal `R` (1 = cancela abre).
 
 ## Estrutura do repositório
 
@@ -11,6 +11,7 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
 ├── .gitignore                         # Ignora artefactos do Quartus/ModelSim
 ├── Identifica_Departamento.vhd        # Bloco 1 — DUT (behavioral, combinacional)
 ├── Identifica_Departamento_tb.vhd     # Testbench auto-verificável (16 funcionários)
+├── Verifica.vhd                       # Bloco 2 — DUT (behavioral, combinacional)
 ├── tabelas_mapas_kernaugh.md          # Relatório: tabela de verdade + mapas de Karnaugh
 ├── tabelas_mapas_kernaugh.pdf         #     "      (versão PDF)
 ├── tabelas_mapas_kernaugh.tex         #     "      (fonte LaTeX)
@@ -20,7 +21,8 @@ O sistema recebe o código de um funcionário (`A`, 4 bits → 0..15) e indica o
     └── specs/
         ├── 00_projeto_controlo_acessos.md         # Spec de projeto (tabela global, blocos)
         ├── 01_identifica_departamento.md          # Spec do Bloco 1 (REQ/DEC/TC + traçabilidade)
-        └── 02_identifica_departamento_tb.md       # Spec do testbench (REQ-TB/TC + traçabilidade)
+        ├── 02_identifica_departamento_tb.md       # Spec do testbench (REQ-TB/TC + traçabilidade)
+        └── 03_verifica.md                         # Spec do Bloco 2 (REQ-VF/TC + traçabilidade)
 ```
 
 ## Bloco 1 — `Identifica_Departamento`
@@ -34,6 +36,18 @@ Arquitetura `Behavioral` com atribuições concorrentes (apenas `and`, `or`, `no
 
 > **Nota (DEC-001):** o segundo termo de `D(0)` foi corrigido para `NOT(A3) AND A2 AND NOT(A1) AND A0`
 > — a versão original (`A2 AND NOT(A1) AND A0`) daria acesso de `D0` ao funcionário 13, contrariando a tabela de verdade. Detalhe em [sdd/specs/01_identifica_departamento.md](sdd/specs/01_identifica_departamento.md).
+
+## Bloco 2 — `Verifica`
+
+| Porta | Direção | Tipo | Significado |
+|---|---|---|---|
+| `D` | in | `std_logic_vector(3 downto 0)` | Departamentos autorizados (`D3..D0`) |
+| `S` | in | `std_logic_vector(1 downto 0)` | Departamento ativo (`00`=D0 … `11`=D3) |
+| `R` | out | `std_logic` | Sinal da cancela (`1` = Abre, `0` = Fechada) |
+
+Arquitetura `Behavioral` com atribuição concorrente a partir da equação `REQ-PRJ-004`:
+`R = D(0)·!S1·!S0 + D(1)·!S1·S0 + D(2)·S1·!S0 + D(3)·S1·S0` — ou seja, `R = D(S)`.
+Detalhe em [spec 03](sdd/specs/03_verifica.md).
 
 ## Simulação (ModelSim / QuestaSim)
 
@@ -62,6 +76,10 @@ No **Quartus Prime**: adicionar os ficheiros `.vhd` ao projeto e definir `Identi
 | TC-002 — Análise sintática/semântica | `vcom` (ModelSim 2020.1) | PASS |
 | TC-003 — Simulação do testbench (16/16, 0 erros) | `vsim -c` | PASS |
 | TC-004 — Síntese (4 logic cells, 4 in / 4 out pins) | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
+| TC-VF-001 — Equivalência de `R` vs `D(S)` (64 combinações) | Script Python | PASS |
+| TC-VF-002 — Análise sintática/semântica de `Verifica.vhd` | `vcom` (ModelSim 2020.1) | PASS |
+| TC-VF-004 — Síntese de `Verifica` (1 logic cell, 6 in / 1 out pins) | `quartus_map` (Quartus Prime Lite 20.1) | PASS |
+| TC-VF-003 — Simulação do Bloco 2 | — | ⏳ Pendente (sem testbench) |
 
 ## Metodologia — SDD (Spec-Driven Development)
 
@@ -82,7 +100,7 @@ Ver [`sdd/README.md`](sdd/README.md) para o processo completo e convenções.
 | Bloco | Entidade | Estado |
 |---|---|---|
 | 1 — Identificação de departamento | `Identifica_Departamento` | ✅ Implementado e verificado |
-| 2 — Verificação de acesso | `Verifica` | ⏳ Pendente |
+| 2 — Verificação de acesso | `Verifica` | ✅ Implementado e verificado (testbench pendente) |
 
 ## Licença / Uso
 

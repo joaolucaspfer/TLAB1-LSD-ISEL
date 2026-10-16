@@ -22,6 +22,9 @@ SPEC  →  DESIGN  →  IMPLEMENT  →  VERIFY  →  LOG
 
 Regras:
 
+- **Tarefas grandes** (bloco/componente VHDL, testbench, feature multi-ficheiro): criar a spec
+  em `sdd/specs/`, atualizar o índice/estado neste README e no `README.md` da raiz, e registar
+  no CHANGELOG — sempre, sem exceção (pedido do utilizador, 2026-10-16).
 - Uma alteração à especificação exige um novo `DEC-*` com justificação e data, e atualização do CHANGELOG.
 - Nenhuma alteração de código sem o correspondente registo.
 - Se a verificação falhar, é criado um `BUG-*` na spec com o estado (aberto/corrigido).
@@ -48,7 +51,7 @@ Regras:
 | [`specs/00_projeto_controlo_acessos.md`](specs/00_projeto_controlo_acessos.md) | Visão geral do sistema, tabela de verdade global, blocos | Ativa |
 | [`specs/01_identifica_departamento.md`](specs/01_identifica_departamento.md) | Bloco 1 — `Identifica_Departamento.vhd` | **Implementado e verificado** |
 | [`specs/02_identifica_departamento_tb.md`](specs/02_identifica_departamento_tb.md) | Testbench do Bloco 1 — `Identifica_Departamento_tb.vhd` | **Implementado e verificado** |
-| `specs/03_verifica.md` | Bloco 2 — `Verifica` (sinal R) | Pendente |
+| [`specs/03_verifica.md`](specs/03_verifica.md) | Bloco 2 — `Verifica` (sinal R) | **Implementado e verificado** (sem testbench) |
 
 ---
 
@@ -58,7 +61,7 @@ Regras:
 |---|---|---|---|---|
 | 1 — Identifica_Departamento | `Identifica_Departamento.vhd` | [01](specs/01_identifica_departamento.md) | Implementado | TC-001, TC-002, TC-004 ✔ |
 | 1 — Testbench | `Identifica_Departamento_tb.vhd` | [02](specs/02_identifica_departamento_tb.md) | Implementado | TC-001b, TC-002, TC-003 ✔ |
-| 2 — Verifica | — | — | Não iniciado | — |
+| 2 — Verifica | `Verifica.vhd` | [03](specs/03_verifica.md) | Implementado | TC-VF-001, TC-VF-002, TC-VF-004 ✔ (TC-VF-003 pendente: sem testbench) |
 
 ---
 

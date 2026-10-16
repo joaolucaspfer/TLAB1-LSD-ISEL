@@ -58,3 +58,23 @@ Formato: data — tipo (`SPEC`/`CODE`/`DOCS`/`VERIFY`/`BUG`) — descrição.
 
 ### VERIFY
 - Sem alterações de código: TC-001..TC-004 mantêm-se **PASS** (apenas documentação).
+
+---
+
+## 2026-10-16 (revisão 4) — Bloco 2: Verifica
+
+### SPEC
+- Criada [`specs/03_verifica.md`](specs/03_verifica.md) (SPEC-VF-03): interface (`D` 4 bits, `S` 2 bits, `R` 1 bit), equação `R = D(S)` em 4 product-terms (`REQ-VF-001..007`), **DEC-030** (implementação direta da equação, atribuição concorrente, sem sinais intermédios), critérios `TC-VF-001..004`, mapa do ficheiro e traçabilidade.
+- Atualizados o índice e a tabela de estado do `sdd/README.md` e a tabela de blocos da [SPEC-PRJ-00](specs/00_projeto_controlo_acessos.md): Bloco 2 passa a **Implementado e verificado** (testbench pendente).
+
+### CODE
+- Criado `Verifica.vhd` (entidade `Verifica` + arquitetura `Behavioral`, atribuição concorrente `R <=` com os 4 termos `D(i) AND S-decodificado`, conforme `REQ-VF-001..004`), com comentários que identificam o departamento coberto por cada termo.
+
+### VERIFY
+- TC-VF-001 — Equivalência da equação vs. `R = D(S)` nas 64 combinações (16×4, script Python): **PASS** — 0 divergências.
+- TC-VF-002 — Análise sintática/semântica com `vcom` (ModelSim-Altera 2020.1): **PASS** — exit 0, sem erros.
+- TC-VF-004 — Síntese com `quartus_map` (Quartus Prime Lite 20.1, projeto temporário, top = `Verifica`): **PASS** — `0 errors, 1 warning` (só NUM_PARALLEL_PROCESSORS); 6 input pins, 1 output pin, **1 logic cell**.
+- TC-VF-003 — **PENDENTE**: testbench do Bloco 2 ainda não criado.
+
+### DOCS
+- Criado `AGENTS.md` na raiz e registada a **regra SDD**: toda a tarefa grande exige spec em `sdd/specs/`, atualização do `sdd/README.md` + `README.md` da raiz e entrada no CHANGELOG. Regra também adicionada à secção 1 (Regras) do `sdd/README.md`.
