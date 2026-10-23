@@ -1,34 +1,13 @@
-# ----------------------------------------------------------------------------
-# Controlo_Acessos.qsf
-# Mapeamento do top-level Controlo_Acessos para a placa Intel DE10-Lite (MAX 10)
-# Especificacao: SPEC-QS-07 (sdd/specs/07_quartus_de10_lite.md)
-#
-# Utilizacao: colocar este .qsf (e os 3 ficheiros .vhd) na mesma pasta do
-# projeto Quartus, juntamente com um .qpf cuja revisao seja "Controlo_Acessos"
-# (File > New Project Wizard, ou copiar o .qpf de um projeto existente).
-# ----------------------------------------------------------------------------
-
-# ----------------------------------------------------------------------------
-# Familia, dispositivo e top-level (DE10-Lite = MAX 10 10M50DAF484C7G)
-# ----------------------------------------------------------------------------
 set_global_assignment -name FAMILY "MAX 10"
 set_global_assignment -name DEVICE 10M50DAF484C7G
 set_global_assignment -name TOP_LEVEL_ENTITY Controlo_Acessos
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 20.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "16:00:00 OCTOBER 16, 2026"
 
-# ----------------------------------------------------------------------------
-# Ficheiros de fonte
-# ----------------------------------------------------------------------------
 set_global_assignment -name VHDL_FILE Identifica_Departamento.vhd
 set_global_assignment -name VHDL_FILE Verifica.vhd
 set_global_assignment -name VHDL_FILE Controlo_Acessos.vhd
 
-# ----------------------------------------------------------------------------
-# Entrada A(3..0) — codigo do funcionario: SW3, SW2, SW1, SW0
-#   A3 -> SW3 (PIN_C12)   A2 -> SW2 (PIN_C11)
-#   A1 -> SW1 (PIN_D12)   A0 -> SW0 (PIN_C10)
-# ----------------------------------------------------------------------------
 set_location_assignment PIN_C12 -to A[3]
 set_location_assignment PIN_C11 -to A[2]
 set_location_assignment PIN_D12 -to A[1]
@@ -38,17 +17,10 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to A[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to A[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to A[0]
 
-# ----------------------------------------------------------------------------
-# Entrada S(1..0) — departamento ativo: SW5, SW4
-#   S1 -> SW5 (PIN_B12)   S0 -> SW4 (PIN_A12)
-# ----------------------------------------------------------------------------
 set_location_assignment PIN_B12 -to S[1]
 set_location_assignment PIN_A12 -to S[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to S[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to S[0]
 
-# ----------------------------------------------------------------------------
-# Saida R — cancela (LED): LEDR0 (PIN_A8)
-# ----------------------------------------------------------------------------
 set_location_assignment PIN_A8 -to R
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to R
