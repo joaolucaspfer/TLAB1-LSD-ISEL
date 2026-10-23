@@ -9,8 +9,8 @@ set_global_assignment -name VHDL_FILE Verifica.vhd
 set_global_assignment -name VHDL_FILE Controlo_Acessos.vhd
 
 set_location_assignment PIN_C12 -to A[3]
-set_location_assignment PIN_C11 -to A[2]
-set_location_assignment PIN_D12 -to A[1]
+set_location_assignment PIN_D12 -to A[2]
+set_location_assignment PIN_C11 -to A[1]
 set_location_assignment PIN_C10 -to A[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to A[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to A[2]

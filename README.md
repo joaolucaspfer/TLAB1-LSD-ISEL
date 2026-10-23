@@ -50,8 +50,8 @@ O ficheiro `Controlo_Acessos.qsf` configura o dispositivo MAX 10
 | Sinal | Elemento | Pino |
 |---|---|---|
 | `A[3]` | SW3 | `PIN_C12` |
-| `A[2]` | SW2 | `PIN_C11` |
-| `A[1]` | SW1 | `PIN_D12` |
+| `A[2]` | SW2 | `PIN_D12` |
+| `A[1]` | SW1 | `PIN_C11` |
 | `A[0]` | SW0 | `PIN_C10` |
 | `S[1]` | SW5 | `PIN_B12` |
 | `S[0]` | SW4 | `PIN_A12` |

@@ -529,9 +529,12 @@ A implementação foi simulada com sucesso em ModelSim-Altera~20.1 (todas as
 asserções dos testbenches passaram) e sintetizada sem erros no Quartus Prime
 Lite~20.1 para a placa Intel DE10-Lite, onde foi definida a atribuição de pinos
 aos interruptores e ao LED. \\
-O teste experimental na placa ficou pendente por indisponibilidade de hardware;
-espera-se que os resultados confirmem o funcionamento do circuito de acordo com
-a Tabela~\ref{tab:verdade}, já validado em simulação.
+O teste experimental na placa confirmou o funcionamento do circuito de acordo
+com a Tabela~\ref{tab:verdade}. Durante a primeira programação foi identificada
+uma troca entre os pinos de $A_2$ e $A_1$; essa atribuição foi corrigida no
+ficheiro de projeto e o teste foi repetido com o mapeamento apresentado no
+Apêndice~\ref{apx:pinos}. O código-fonte e os ficheiros do projeto estão
+disponíveis no repositório GitHub indicado em~\cite{repositorio}.
 
 %-------------------------------------------------------------------------------
 % REFERENCES
@@ -544,6 +547,8 @@ a Tabela~\ref{tab:verdade}, já validado em simulação.
 Pedro Miguens Matutino, Sérgio André \emph{Guia de Instalação do Quartus Prime Lite Edition 20.1.1.720}, 2022, ISEL.
 \bibitem{de10liteManual}
 Terasic \emph{DE10-lite User Manual}, 2020, Terasic.
+\bibitem{repositorio}
+Repositório GitHub do projeto, \url{https://github.com/joaolucaspfer/TLAB1-LSD-ISEL}.
 \end{thebibliography}
 
 
@@ -599,8 +604,8 @@ Terasic \emph{DE10-lite User Manual}, 2020, Terasic.
 	\hline
 	\textbf{Sinal} & \textbf{Periférico} & \textbf{Pino} \\ \hline\hline
 	$A_3$ & SW3 & C12  \\
-	$A_2$ & SW2 & C11 \\
-	$A_1$ & SW1 & D12 \\
+	$A_2$ & SW2 & D12 \\
+	$A_1$ & SW1 & C11 \\
 	$A_0$ & SW0 & C10 \\ \hline
 	$S_1$ & SW5 & B12 \\
 	$S_0$ & SW4 & A12 \\ \hline \hline
