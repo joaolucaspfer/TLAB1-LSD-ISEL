@@ -17,6 +17,6 @@
 \contentsline {subsection}{\numberline {4.1}Simulação}{5}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Teste}{6}{subsection.4.2}%
 \contentsline {section}{\numberline {5}Conclusão}{6}{section.5}%
-\contentsline {section}{\numberline {}Referências}{7}{section.5}%
-\contentsline {section}{\numberline {A}VHDL}{8}{appendix.A}%
-\contentsline {section}{\numberline {B}Atribuição de Pinos}{15}{appendix.B}%
+\contentsline {section}{\numberline {}Referências}{8}{section.5}%
+\contentsline {section}{\numberline {A}VHDL}{9}{appendix.A}%
+\contentsline {section}{\numberline {B}Atribuição de Pinos}{16}{appendix.B}%

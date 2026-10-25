@@ -1,4 +1,4 @@
 \babel@toc {portuguese}{}\relax 
 \contentsline {table}{\numberline {1}{\ignorespaces Tabela de verdade global do sistema de controlo de acessos.}}{2}{table.caption.1}%
 \contentsline {table}{\numberline {2}{\ignorespaces Resultados da simulação dos três blocos (ModelSim-Altera 20.1).}}{6}{table.caption.11}%
-\contentsline {table}{\numberline {3}{\ignorespaces Atribuição de pinos do módulo \texttt {Controlo\_Acessos} na placa Intel DE10-Lite~\cite {de10liteManual}.}}{15}{table.caption.13}%
+\contentsline {table}{\numberline {3}{\ignorespaces Atribuição de pinos do módulo \texttt {Controlo\_Acessos} na placa Intel DE10-Lite~\cite {de10liteManual}.}}{16}{table.caption.13}%

@@ -517,6 +517,18 @@ $R$ a um LED (\texttt{LEDR0}), de acordo com a atribuição de pinos da
 Tabela~\ref{tab:pinos} (Apêndice~\ref{apx:pinos}). Os sinais usam o standard de
 E/S \texttt{3.3-V LVTTL}.
 
+O teste na placa foi realizado num MacBook Pro com uma partição de Windows~10.
+Nessa partição foram instalados o Quartus Prime Lite e o controlador do
+USB-Blaster, permitindo programar a placa DE10-Lite. Na primeira tentativa, o
+comportamento observado não correspondia ao esperado: os pinos associados a
+$A_2$ e $A_1$ estavam trocados, fazendo com que os interruptores que
+representavam esses bits do código do funcionário fossem interpretados de forma
+incorreta. Para poder concluir o teste, a atribuição foi corrigida
+temporariamente no próprio Quartus; depois dessa alteração, a programação e o
+funcionamento da placa foram bem-sucedidos. Por fim, a correção foi aplicada
+definitivamente no código e na atribuição de pinos do projeto, ficando o
+mapeamento final apresentado na Tabela~\ref{tab:pinos}.
+
 \section{Conclusão} 
 O trabalho consistiu em projetar, descrever em VHDL e verificar um sistema
 digital combinatório de controlo de acessos a um edifício com quatro
@@ -529,10 +541,13 @@ A implementação foi simulada com sucesso em ModelSim-Altera~20.1 (todas as
 asserções dos testbenches passaram) e sintetizada sem erros no Quartus Prime
 Lite~20.1 para a placa Intel DE10-Lite, onde foi definida a atribuição de pinos
 aos interruptores e ao LED. \\
-O teste experimental na placa confirmou o funcionamento do circuito de acordo
-com a Tabela~\ref{tab:verdade}. Durante a primeira programação foi identificada
-uma troca entre os pinos de $A_2$ e $A_1$; essa atribuição foi corrigida no
-ficheiro de projeto e o teste foi repetido com o mapeamento apresentado no
+O teste experimental foi realizado através de um MacBook Pro com Windows~10,
+utilizando o Quartus Prime Lite e o USB-Blaster para programar a placa. Na
+primeira tentativa foram detetados os pinos $A_2$ e $A_1$ trocados, o que fazia
+com que os códigos dos funcionários fossem interpretados incorretamente. A
+atribuição foi corrigida temporariamente no Quartus, permitindo confirmar o
+funcionamento do circuito, e posteriormente a correção foi aplicada
+definitivamente no código e no projeto. O mapeamento final é o apresentado no
 Apêndice~\ref{apx:pinos}. O código-fonte e os ficheiros do projeto estão
 disponíveis no repositório GitHub indicado em~\cite{repositorio}.
 
